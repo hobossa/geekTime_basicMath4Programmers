@@ -1,73 +1,75 @@
 package com.hoboss;
 
-public class Main {
-    // 有2，3，7三种面额的纸币，凑够m元(100)，所需要最少的钱币数
-    private static int[][] getMatrix(int m) {
+import com.sun.source.tree.Tree;
 
-        int[][] matrix = new int[m + 1][4];
-        for (int i = 0; i < m + 1; ++i) {
+import java.util.HashMap;
 
-            if (0 == i) {
-                for (int j = 0; j < 4; ++j) {
-                    matrix[i][j] = 0;
-                }
-            } else {
-                int n2 = -1;
-                int n3 = -1;
-                int n7 = -1;
-                if (i - 2 >= 0 && matrix[i - 2][3] != -1) {
-                    n2 = matrix[i - 2][3] + 1;
-                }
-                if (i - 3 >= 0 && matrix[i - 3][3] != -1) {
-                    n3 = matrix[i - 3][3] + 1;
-                }
-                if (i - 7 >= 0 && matrix[i - 7][3] != -1) {
-                    n7 = matrix[i - 7][3] + 1;
-                }
-                if (-1 == n2 && -1 == n3 && -1 == n7) {
-                    matrix[i][0] = matrix[i][1] = matrix[i][2] = matrix[i][3] = -1;
-                } else {
-                    // 找出最小且不为-1的值。
-                    int min = n2;
-                    if (-1 == min || (-1 != n3 && min > n3)) {
-                        min = n3;
-                    }
-                    if (-1 == min || (-1 != n7 && min > n7)) {
-                        min = n7;
-                    }
+class TreeNode {
+    public Character letter;
+    public HashMap<Character, TreeNode> children = null;
+    public String prefix = null;    // 从根节点到止节点的所有节点组成的前缀。
+    public String explanation = null;   // 如果当前节点对应一个单词，那么这里保存该单词的解析。
 
-                    if (min == n2) {
-                        matrix[i][0] = matrix[i - 2][0] + 1;
-                        matrix[i][1] = matrix[i - 2][1];
-                        matrix[i][2] = matrix[i - 2][2];
-                        matrix[i][3] = matrix[i - 2][3] + 1;
-                    } else if (min == n3) {
-                        matrix[i][0] = matrix[i - 3][0];
-                        matrix[i][1] = matrix[i - 3][1] + 1;
-                        matrix[i][2] = matrix[i - 3][2];
-                        matrix[i][3] = matrix[i - 3][3] + 1;
-                    } else /*(min == nf7)*/ {
-                        matrix[i][0] = matrix[i - 7][0];
-                        matrix[i][1] = matrix[i - 7][1];
-                        matrix[i][2] = matrix[i - 7][2] + 1;
-                        matrix[i][3] = matrix[i - 7][3] + 1;
-                    }
-                }
-            }
-        }
-        return matrix;
+    public TreeNode(Character ch, String pre) {
+        letter = ch;
+        prefix = pre;
+        children = new HashMap<>();
+    }
+}
+
+class MyDictionary {
+    private TreeNode root = null;
+
+    public MyDictionary() {
+        root = new TreeNode(null, null);
     }
 
-    public static void main(String[] args) {
-        int[][] matrix = getMatrix(100);
-        System.out.println(" | 2 3 7 total");
-        System.out.println("-+------------");
-        for (int i = 0; i < matrix.length; ++i) {
-            System.out.print("" + i + "|");
-            for (int j = 0; j < matrix[i].length; ++j) {
-                System.out.print(" " + matrix[i][j]);
+    private boolean _AddWord(String word, TreeNode node, String pre, String exp) {
+        if (word.length() > 0) {
+            char c = word.charAt(0);
+            boolean newNode = false;
+
+            if (!node.children.containsKey(c)) {
+                newNode = true;
+                node.children.put(c, new TreeNode(c, pre));
             }
-            System.out.println();
+
+            if (word.length() == 1) {
+                if (newNode) {
+                    node.children.get(c).explanation = exp;
+                    return true;
+                } else {
+                    // already exist;
+                    return false;
+                }
+            } else {
+                return _AddWord(word.substring(1), node.children.get(c), pre+c, exp);
+            }
+        } else {
+            return false;
         }
+    }
+
+    public boolean AddWord(String word, String exp) {
+        return _AddWord(word, root, "", exp);
+    }
+
+    private String _Search(String word, TreeNode node) {
+        return "";
+    }
+
+    public String Search(String work) {
+        String explanation = null;
+        return explanation;
+    }
+
+    public void listAllWords() {
+
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
     }
 }
