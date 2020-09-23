@@ -78,43 +78,34 @@ class MyDictionary {
         return _Search(word, root);
     }
 
-    private void _listAllWords(Stack<TreeNode> nodes) {
-        if (nodes.empty()) {
-            return;
-        }
-        TreeNode node = nodes.pop();
+    private void _listAllWords(TreeNode node) {
+        // 递归实现
         if (node.explanation != null){
             System.out.println(node.prefix + node.letter +":" + node.explanation);
         }
 
         for (TreeNode n : node.children.values()) {
-            nodes.push(n);
+            _listAllWords(n);
         }
-        _listAllWords(nodes);
     }
 
     public void listAllWords() {
-        Stack<TreeNode> ts = new Stack<>();
-        ts.push(root);
-        _listAllWords(ts);
+        _listAllWords(root);
     }
 
-    private void _listAllNodes(Stack<TreeNode> nodes) {
-        if (nodes.empty()) {
-            return;
-        }
-        TreeNode node = nodes.pop();
-        System.out.println(node.toString());
-        for (TreeNode n : node.children.values()) {
-            nodes.push(n);
-        }
-        _listAllNodes(nodes);
-    }
 
     public void listAllNodes() {
         Stack<TreeNode> ts = new Stack<>();
         ts.push(root);
-        _listAllNodes(ts);
+
+        // 循环+栈实现
+        while (!ts.empty()){
+            TreeNode node = ts.pop();
+            System.out.println(node.toString());
+            for (TreeNode n : node.children.values()) {
+                ts.push(n);
+            }
+        }
     }
 }
 
